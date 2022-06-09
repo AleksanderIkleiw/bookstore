@@ -44,6 +44,8 @@ python manage.py runserver
 - Login/Register with email confirmation
 - Database management from the `admin` page
 - usage of PayPal as a payment provider
+- confirmation of order sent to email
+- order saved in the database and connected to `user`
 
 
 
