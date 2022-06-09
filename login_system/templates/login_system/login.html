@@ -3,8 +3,10 @@
 {%  block body %}
     <form method="POST">
         {% csrf_token %}
+        {# csrf token is required in post requests and is a security requirement #}
         <label>Username</label>
         {{ form.username }}
+        {# we display form's html #}
         <label>Password</label>
         {{ form.password }}
         <button type="submit" class="btn btn-primary">Submit</button>

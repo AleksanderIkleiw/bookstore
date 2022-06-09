@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from login_system.views import home_view
+
+"""
+using path function we can route urls. 
+Using include function we can pass urls from
+app's urls file and make the route appear after
+first argument.
+"""
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_view, name="home_page"),
+    path('', include('inventory.urls')),
     path('', include('login_system.urls'))
 ]

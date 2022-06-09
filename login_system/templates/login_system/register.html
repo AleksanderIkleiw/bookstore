@@ -5,15 +5,19 @@
     <form method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <label for="exampleInputEmail1">Username</label>
+            <label>Username</label>
               {{form.username}}
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
+            <label>Email</label>
+              {{form.email}}
+        </div>
+        <div class="form-group">
+            <label>Password</label>
               {{form.password1}}
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">Confirm password</label>
+            <label>Confirm password</label>
               {{form.password2}}
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

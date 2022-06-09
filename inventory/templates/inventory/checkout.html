@@ -1,0 +1,115 @@
+{% include 'login_system/base.html' %}
+{# include allow to render in a way, that base.html file from another app is ,,extended''(definition is  a little different)#}
+
+{% if not Is_Empty %}
+    {# simple if block that is using arguments passed in dictionary from view #}
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <b>Title</b>
+    </div>
+    <div class="col-sm">
+      <b>Price</b>
+    </div>
+  </div>
+</div>
+
+{% for book in Books %}
+    {# for loop to iterate over books and display their title and price #}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                {{ book.title }}
+            </div>
+            <div class="col-sm">
+                {{ book.price }}
+            </div>
+            <div class="col-sm">
+                <a href="{% url 'remove_page' book.id %}" class="btn btn-primary btn-sm">Remove</a>
+                {# url is ,,set'' using it's name provided in urls file #}
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+
+    </div>
+    <div class="col-sm">
+        <b>Total Price: {{ Total_Price }}zł</b>
+    </div>
+  </div>
+</div>
+    {# paypal's JS code to display payment buttons #}
+        <!-- Set up a container element for the button -->
+    <div id="paypal-button-container"></div>
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{ Api_key }}&currency=PLN"></script>
+
+    <script>
+        {# csrf token generation function from django docs #}
+            function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        let csrf_token = getCookie('csrftoken');
+        let user_pk = '{{ User_pk }}'
+        {# function to handle order data and then send it to complete_view #}
+        function  complete_order(data) {
+            let url = "{% url 'complete_page' %}";
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application-/json',
+                        'X-CSRFToken': csrf_token
+                    },
+                    body: JSON.stringify({'user_primary_key': user_pk, 'data_': data})
+                })
+        }
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: {{Total_Price}}
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    {# after payment is approved we call  complete_order function and then redirect to other view#}
+                    complete_order(orderData)
+                    window.location.replace("{% url 'bought_page' %}")
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+    </script>
+
+
+
+{% else %}
+    <b>Your shopping cart is empty.</b>
+{% endif %}

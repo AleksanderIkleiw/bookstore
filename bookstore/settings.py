@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'login_system',
+    'login_system',  # created apps added
     'inventory',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -128,4 +130,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
-}
+}  # message error was changed to danger, so it can directly render Bootstrap danger alert
+
+MEDIA_URL = config('MEDIA_URL', default="/media/")  # url where media files will be stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static', [x for x in MEDIA_URL.split('/') if x][0])  # full path of media directory
+
+"""
+Below are settings imported using decouple library, which allows to store 
+chosen settings in .env or .ini file
+"""
+EMAIL_SMTP = config('EMAIL_SMTP', default="smtp.gmail.com")  # smtp protocol address
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID', default='')  # id of the paypal's client id used to initiate payment
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'  # settings that makes paypal's popup window actually render payment's website

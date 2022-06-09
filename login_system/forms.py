@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.views import AuthenticationForm
-import re
 
 
 # Create your models here.
@@ -10,14 +9,24 @@ import re
 
 class RegisterForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = ['password2', 'username', 'password1']
+        model = User  # we are saying that the model of the form is User
+        fields = ['username', 'email', 'password1', 'password2']  # fields that will be required by form
 
     def __init__(self, *args, **kwargs):
-        super(RegisterForm, self).__init__(*args, **kwargs)  # używając super wraz z __init__ jesteśmy w stanie modyfikować atrybuty formy
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        """
+        using super together with __init__ we are able to modify the attributes of the form
+        """
+
         self.fields['username'].widget.attrs['type'] = 'email'
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['username'].widget.attrs['placeholder'] = 'Username'
+        """
+        we assign custom html attributes to form fields
+        """
+        self.fields['email'].widget.attrs['type'] = 'email'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['placeholder'] = 'Email'
 
         self.fields['password1'].widget.attrs['type'] = 'password'
         self.fields['password1'].widget.attrs['class'] = 'form-control'
@@ -42,5 +51,3 @@ class LoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs['type'] = 'password'
         self.fields['password'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
-
-

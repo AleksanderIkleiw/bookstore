@@ -1,0 +1,31 @@
+{% load custom_tags_filters %}
+{% load static %}
+{% include 'login_system/base.html' %}
+
+{# load static allows to load photos from media file #}
+{# custom_tags_filters is a module, that contains some filters I needed #}
+{% if Is_empty %}
+    {# if ther is none book in database #}
+    <H1>Currently nothing is for sale</H1>
+{% else %}
+<div class="container">
+    {% for object in Objects %}
+        {# for each object(book) we use some filter because I passed it as dict from views #}
+        <hr>
+            <div class="row">
+                <div class="col-md-4 product-grid">
+                    <div class="image">
+                        <a href="{% url 'buy_page' object|get_item:'id' %}">
+                            {# simple filter that takes dict and key as an argument and return dictionary's value #}
+                            <img src="{{ object|get_item:'photo'|create_photo_url }}" class="w-100">
+                        </a>
+                    </div>
+                    <h5 class="text-center">{{ object|get_item:"title" }}</h5>
+                    <h5 class="text-center">{{ object|get_item:"author" }}</h5>
+                    <h5 class="text-center">Price: {{object|get_item:"price"}}zł</h5>
+                    <a href="{% url 'buy_page' object|get_item:'id' %}" class="btn btn-primary btn-lg">Add to cart</a>
+                </div>
+    {% endfor %}
+            </div>
+</div>
+{% endif %}

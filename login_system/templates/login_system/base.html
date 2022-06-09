@@ -10,13 +10,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <title>Księgarnia</title>
+    <title>Bookstore</title>
     {% block head %}
+        {# blocks allows us to ,,insert'' some code in other templated when we call the block #}
     {% endblock %}
   </head>
 
   <body>
-
+    {# I am not good in frontend so I used bootstrap templates and scripts #}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -31,6 +32,12 @@
         </button>
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
+                    {# if user is logged we can show logout button and view which displays cart's content #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'checkout_page' %}">
+                            Shopping cart
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout_page' %}">
                             Logout
@@ -44,7 +51,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'register_page' %}">
-                            Rejestracja
+                            Sign up
                         </a>
                     </li>
                 {% endif %}
@@ -54,11 +61,14 @@
     </nav>
 
     {% for message in messages %}
+        {# for each passed message to template it is rendered #}
         <div class="alert alert-{{ message.tags }}" role="alert">
             {{ message }}
         </div>
     {% endfor %}
 
+    {% block body %}
+    {% endblock %}
 
   </body>
 
